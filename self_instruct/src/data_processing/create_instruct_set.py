@@ -1,16 +1,16 @@
 import json
-import sys
 import random
+import sys
+
 from datasets import load_dataset
 
-train_path = sys.argv[1]
-val_path = sys.argv[2]
+dataset_name = sys.argv[1]
+train_path = sys.argv[2]
+val_path = sys.argv[3]
 
 records = []
 
-
-for row in load_dataset("IlyaGusev/ru_turbo_alpaca", split="train"):
-    row["output"] = row.pop("alternative_output")
+for row in load_dataset(dataset_name, split="train"):
     row = {key: value for key, value in row.items() if key in ("input", "output", "instruction")}
     records.append(row)
 
