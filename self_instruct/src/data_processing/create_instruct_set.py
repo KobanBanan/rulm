@@ -8,6 +8,9 @@ dataset_name = sys.argv[1]
 train_path = sys.argv[2]
 val_path = sys.argv[3]
 
+print(f'dataset {dataset_name}')
+print(f'train_path {train_path}')
+
 records = []
 
 for row in load_dataset(dataset_name, split="train"):
