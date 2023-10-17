@@ -10,10 +10,13 @@ val_path = sys.argv[3]
 
 print(f'dataset {dataset_name}')
 print(f'train_path {train_path}')
+print('val path {val_path}')
 
 records = []
 
+print(f'downloading {dataset_name}...')
 for row in load_dataset(dataset_name, split="train"):
+    print('preparing sft dataset...')
     row = {key: value for key, value in row.items() if key in ("input", "output", "instruction")}
     records.append(row)
 
@@ -27,3 +30,5 @@ with open(train_path, "w") as w:
 with open(val_path, "w") as w:
     for record in val_records:
         w.write(json.dumps(record, ensure_ascii=False).strip() + "\n")
+
+print('Done!')
