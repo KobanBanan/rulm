@@ -3,6 +3,7 @@ import random
 import sys
 
 from datasets import load_dataset
+from src.data_processing.bad_substrings import has_bad_ss
 
 dataset_name = sys.argv[1]
 train_path = sys.argv[2]
@@ -15,10 +16,38 @@ print('val path {val_path}')
 records = []
 
 print(f'downloading {dataset_name}...')
+
 for row in load_dataset(dataset_name, split="train"):
     print('preparing sft dataset...')
-    row = {key: value for key, value in row.items() if key in ("input", "output", "instruction")}
-    records.append(row)
+    instruction = row["instruction"]
+    output = row["output"]
+    if has_bad_ss([{"content": output}]):
+        continue
+
+    records.append({
+        "messages": [
+            {"role": "user", "content": instruction},
+            {"role": "bot", "content": output}
+        ],
+        "source": "alpaca-evol-instruct"
+    })
+
+print("Evol-instruct count:", len(records))
+
+cleaned_records = []
+for record in records:
+    messages = record["messages"]
+    roles = {m["role"] for m in messages}
+    for role in roles:
+        assert role in ("bot", "user", "system"), role
+    if has_bad_ss(messages):
+        continue
+    if not record["messages"]:
+        continue
+    cleaned_records.append(record)
+
+records = cleaned_records
+print("All count after cleaning:", len(records))
 
 random.shuffle(records)
 border = int(0.95 * len(records))

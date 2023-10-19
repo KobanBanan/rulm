@@ -26,7 +26,7 @@
     },
     "load_in_8bit": true,
     "only_target_loss": true,
-    "mode": "instruct",
+    "mode": "chat",
     "templates_path": "internal_prompts/vvchatbot_search.json",
     "model_name": "models/mistral-7b",
     "model_type": "causal",

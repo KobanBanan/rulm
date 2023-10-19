@@ -7,7 +7,7 @@ import numpy as np
 import torch
 import wandb
 from peft import get_peft_model, LoraConfig, prepare_model_for_kbit_training
-from src.dataset import ChatDataset, InstructDataset
+from src.dataset import ChatDataset
 from src.util.dl import set_random_seed, fix_tokenizer, fix_model
 from src.util.io import read_jsonl
 from transformers import AutoTokenizer, AutoModelForCausalLM, DataCollatorForTokenClassification, AutoConfig
@@ -151,14 +151,13 @@ def train(
     templates_path = config["templates_path"]
     only_target_loss = config.get("only_target_loss", True)
     mode = config.get("mode", "chat")
-    assert mode in ("chat", "instruct"), "Only chat or instruct mode is supported in new versions!"
+    assert mode == "chat", "Only chat or instruct mode is supported in new versions!"
     assert model_type == "causal", "Only causal models are supported in new versions!"
     max_tokens_count = config["max_tokens_count"]
 
-    processor = ChatDataset if mode == 'chat' else InstructDataset
     datasets = []
     for records in (train_records, val_records):
-        datasets.append(processor(
+        datasets.append(ChatDataset(
             records,
             tokenizer,
             max_tokens_count=max_tokens_count,
