@@ -189,7 +189,7 @@ def train(
             load_in_8bit=True,
             device_map=device_map,
             torch_dtype=torch_dtype,
-            use_flash_attention_2=use_flash_attention_2
+            # use_flash_attention_2=use_flash_attention_2
         )
         model = fix_model(model, tokenizer, use_resize=False)
         model = custom_prepare_model_for_int8_training(model)
