@@ -1,19 +1,19 @@
-import random
 import json
 import os
+import random
 
 import fire
-import wandb
-import torch
 import numpy as np
-from transformers import AutoTokenizer, AutoModelForCausalLM, DataCollatorForTokenClassification, AutoConfig
-from transformers import Trainer, TrainingArguments, logging, TrainerCallback, TrainerState, TrainerControl, BitsAndBytesConfig
-from transformers.trainer_utils import PREFIX_CHECKPOINT_DIR
+import torch
+import wandb
 from peft import get_peft_model, LoraConfig, prepare_model_for_kbit_training
-
-from src.dataset import ChatDataset
+from src.dataset import ChatDataset, InstructDataset
 from src.util.dl import set_random_seed, fix_tokenizer, fix_model
 from src.util.io import read_jsonl
+from transformers import AutoTokenizer, AutoModelForCausalLM, DataCollatorForTokenClassification, AutoConfig
+from transformers import Trainer, TrainingArguments, logging, TrainerCallback, TrainerState, TrainerControl, \
+    BitsAndBytesConfig
+from transformers.trainer_utils import PREFIX_CHECKPOINT_DIR
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
@@ -35,9 +35,9 @@ class TrainerNoBaseSave(Trainer):
             metric_value = metrics[metric_to_check]
             operator = np.greater if self.args.greater_is_better else np.less
             if (
-                self.state.best_metric is None
-                or self.state.best_model_checkpoint is None
-                or operator(metric_value, self.state.best_metric)
+                    self.state.best_metric is None
+                    or self.state.best_model_checkpoint is None
+                    or operator(metric_value, self.state.best_metric)
             ):
                 self.state.best_metric = metric_value
                 self.state.best_model_checkpoint = output_dir
@@ -49,11 +49,11 @@ class TrainerNoBaseSave(Trainer):
 
 class SavePeftModelCallback(TrainerCallback):
     def on_save(
-        self,
-        args: TrainingArguments,
-        state: TrainerState,
-        control: TrainerControl,
-        **kwargs,
+            self,
+            args: TrainingArguments,
+            state: TrainerState,
+            control: TrainerControl,
+            **kwargs,
     ):
         checkpoint_path = f"{PREFIX_CHECKPOINT_DIR}-{state.global_step}"
         checkpoint_folder = os.path.join(args.output_dir, checkpoint_path)
@@ -62,9 +62,9 @@ class SavePeftModelCallback(TrainerCallback):
 
 
 def custom_prepare_model_for_int8_training(
-    model,
-    output_embedding_layer_name="lm_head",
-    layer_norm_names=["layer_norm"]
+        model,
+        output_embedding_layer_name="lm_head",
+        layer_norm_names=["layer_norm"]
 ):
     for name, param in model.named_parameters():
         param.requires_grad = False
@@ -78,6 +78,7 @@ def custom_prepare_model_for_int8_training(
     else:
         def make_inputs_require_grad(module, input, output):
             output.requires_grad_(True)
+
         model.get_input_embeddings().register_forward_hook(make_inputs_require_grad)
 
     if hasattr(model, output_embedding_layer_name):
@@ -87,6 +88,7 @@ def custom_prepare_model_for_int8_training(
         class CastOutputToFloat(torch.nn.Sequential):
             def forward(self, x):
                 return super().forward(x.to(input_dtype)).to(torch.float32)
+
         setattr(model, output_embedding_layer_name, CastOutputToFloat(output_embedding_layer))
 
     model.gradient_checkpointing_enable()
@@ -95,15 +97,15 @@ def custom_prepare_model_for_int8_training(
 
 
 def train(
-    config_file: str,
-    train_file: str,
-    val_file: str,
-    output_dir: str,
-    checkpoint: str = None,
-    sample_rate: float = 1.0,
-    report_to: str = "wandb",
-    seed: int = 42,
-    use_flash_attention_2: bool = False
+        config_file: str,
+        train_file: str,
+        val_file: str,
+        output_dir: str,
+        checkpoint: str = None,
+        sample_rate: float = 1.0,
+        report_to: str = "wandb",
+        seed: int = 42,
+        use_flash_attention_2: bool = False
 ):
     set_random_seed(seed)
     logging.set_verbosity_info()
@@ -149,13 +151,14 @@ def train(
     templates_path = config["templates_path"]
     only_target_loss = config.get("only_target_loss", True)
     mode = config.get("mode", "chat")
-    assert mode == "chat", "Only chat mode is supported in new versions!"
+    assert mode in ("chat", "instruct"), "Only chat or instruct mode is supported in new versions!"
     assert model_type == "causal", "Only causal models are supported in new versions!"
     max_tokens_count = config["max_tokens_count"]
 
+    processor = ChatDataset if mode == 'chat' else InstructDataset
     datasets = []
     for records in (train_records, val_records):
-        datasets.append(ChatDataset(
+        datasets.append(processor(
             records,
             tokenizer,
             max_tokens_count=max_tokens_count,
