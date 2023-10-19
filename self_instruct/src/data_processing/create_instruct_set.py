@@ -17,8 +17,8 @@ records = []
 
 print(f'downloading {dataset_name}...')
 
+print('preparing sft dataset...')
 for row in load_dataset(dataset_name, split="train"):
-    print('preparing sft dataset...')
     instruction = row["instruction"]
     output = row["output"]
     if has_bad_ss([{"content": output}]):
