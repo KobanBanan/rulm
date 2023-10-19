@@ -3,7 +3,7 @@ import random
 import sys
 
 from datasets import load_dataset
-from src.data_processing.bad_substrings import has_bad_ss
+from bad_substrings import has_bad_ss
 
 dataset_name = sys.argv[1]
 train_path = sys.argv[2]
