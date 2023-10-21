@@ -183,12 +183,15 @@ def train(
     use_bf16 = bool(trainer_config.get("bf16", False))
     torch_dtype = torch.bfloat16 if use_bf16 else torch.float16
     if load_in_8bit:
+        max_memory = f'{40960}MB'
+        n_gpus = torch.cuda.device_count()
         assert not load_in_4bit
         model = model_types[model_type].from_pretrained(
             model_name,
             load_in_8bit=True,
             device_map=device_map,
             torch_dtype=torch_dtype,
+            max_memory={i: max_memory for i in range(n_gpus)},
             # use_flash_attention_2=use_flash_attention_2
         )
         model = fix_model(model, tokenizer, use_resize=False)
