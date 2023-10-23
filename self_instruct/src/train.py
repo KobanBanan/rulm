@@ -246,6 +246,7 @@ def train(
 
     trainer.train(checkpoint)
     model.save_pretrained(output_dir)
+    model.push_to_hub(f"Data-Lab/{output_dir.split('/')[1]}", private=True)
 
 
 if __name__ == "__main__":
