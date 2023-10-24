@@ -246,7 +246,10 @@ def train(
 
     trainer.train(checkpoint)
     model.save_pretrained(output_dir)
-    model.push_to_hub(f"Data-Lab/{output_dir.split('/')[1]}", private=True)
+
+    final_model_name = f"Data-Lab/{output_dir.split('/')[1]}"
+    model.push_to_hub(final_model_name, private=True)
+    tokenizer.push_to_hub(final_model_name, private=True)
 
 
 if __name__ == "__main__":
