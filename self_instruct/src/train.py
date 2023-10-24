@@ -107,6 +107,7 @@ def train(
         sample_rate: float = 1.0,
         report_to: str = "wandb",
         seed: int = 42,
+        test_mode: bool = False,
         use_flash_attention_2: bool = False
 ):
     set_random_seed(seed)
@@ -146,6 +147,11 @@ def train(
 
     train_records = read_jsonl(train_file)
     val_records = read_jsonl(val_file)
+
+    if test_mode:
+        train_records = train_records[:10]
+        val_records = val_records[:10]
+
     random.shuffle(train_records)
     print(train_records[0])
 
