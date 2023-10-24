@@ -15,7 +15,7 @@ from transformers import Trainer, TrainingArguments, logging, TrainerCallback, T
     BitsAndBytesConfig
 from transformers.trainer_utils import PREFIX_CHECKPOINT_DIR
 
-from tools.merge_lora import merge_lora
+from src.tools.merge_lora import merge_lora
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
