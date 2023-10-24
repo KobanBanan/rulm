@@ -150,8 +150,8 @@ def train(
     val_records = read_jsonl(val_file)
 
     if test_mode:
-        train_records = train_records[:10]
-        val_records = val_records[:10]
+        train_records = train_records[:5]
+        val_records = val_records[:5]
 
     random.shuffle(train_records)
     print(train_records[0])
@@ -256,7 +256,7 @@ def train(
     trainer.train(checkpoint)
     model.save_pretrained(output_dir)
 
-    final_model_name = f"Data-Lab/{output_dir.split('/')[1]}+{exp_name}"
+    final_model_name = f"Data-Lab/{output_dir.split('/')[1]}_{exp_name}"
     merge_lora(output_dir, final_model_name)
 
 
