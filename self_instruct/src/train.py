@@ -108,6 +108,7 @@ def train(
         report_to: str = "wandb",
         seed: int = 42,
         test_mode: bool = False,
+        exp_name: str = 'v1.0',
         use_flash_attention_2: bool = False
 ):
     set_random_seed(seed)
@@ -255,7 +256,7 @@ def train(
     trainer.train(checkpoint)
     model.save_pretrained(output_dir)
 
-    final_model_name = f"Data-Lab/{output_dir.split('/')[1]}"
+    final_model_name = f"Data-Lab/{output_dir.split('/')[1]}+{exp_name}"
     merge_lora(output_dir, final_model_name)
 
 
