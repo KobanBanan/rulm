@@ -28,7 +28,7 @@
     "only_target_loss": true,
     "mode": "chat",
     "templates_path": "internal_prompts/vvchatbot_search.json",
-    "model_name": "models/mistral-7b",
+    "model_name": "models/Mistral-7B-v0.1",
     "model_type": "causal",
     "max_tokens_count": 2000
 }
