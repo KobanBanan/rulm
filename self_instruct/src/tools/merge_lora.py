@@ -1,13 +1,9 @@
-import fire
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import PeftConfig, PeftModel
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 
-def merge_lora(
-    model_name,
-    output_path
-):
+def merge_lora(model_name: str, final_model_name: str, output_path=None):
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     config = PeftConfig.from_pretrained(model_name)
     base_model_path = config.base_model_name_or_path
@@ -29,9 +25,9 @@ def merge_lora(
     lora_model = lora_model.merge_and_unload()
     lora_model.train(False)
 
-    lora_model.save_pretrained(output_path)
-    tokenizer.save_pretrained(output_path)
+    if output_path:
+        lora_model.save_pretrained(output_path)
+        tokenizer.save_pretrained(output_path)
 
-
-if __name__ == "__main__":
-    fire.Fire(merge_lora)
+    lora_model.push_to_hub(final_model_name, private=True)
+    tokenizer.push_to_hub(final_model_name, private=True)

@@ -15,6 +15,8 @@ from transformers import Trainer, TrainingArguments, logging, TrainerCallback, T
     BitsAndBytesConfig
 from transformers.trainer_utils import PREFIX_CHECKPOINT_DIR
 
+from tools.merge_lora import merge_lora
+
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 
@@ -248,8 +250,7 @@ def train(
     model.save_pretrained(output_dir)
 
     final_model_name = f"Data-Lab/{output_dir.split('/')[1]}"
-    model.push_to_hub(final_model_name, private=True)
-    tokenizer.push_to_hub(final_model_name, private=True)
+    merge_lora(output_dir, final_model_name)
 
 
 if __name__ == "__main__":
