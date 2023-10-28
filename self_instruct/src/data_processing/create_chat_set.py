@@ -3,11 +3,15 @@ import random
 import sys
 
 from datasets import load_dataset
+from prompt_generator import PromptGenerator
 
 from bad_substrings import has_bad_ss
 
 dataset_name = 'd0rj/synthetic-instruct-gptj-pairwise-ru'
 split = 'train[0:5000]'
+
+prompt_generator = PromptGenerator()
+
 train_path = sys.argv[1]
 val_path = sys.argv[2]
 
@@ -20,8 +24,8 @@ records = []
 print(f'downloading {dataset_name}...')
 
 print('preparing sft dataset...')
-for row in load_dataset(dataset_name, split="train"):
-    instruction = row["prompt"]
+for row in load_dataset(dataset_name, split=split):
+    instruction, _ = prompt_generator(row["prompt"], [])
     output = row["chosen"]
     if has_bad_ss([{"content": output}]):
         continue
