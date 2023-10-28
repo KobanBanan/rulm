@@ -58,6 +58,7 @@ class ChatDataset(Dataset):
         )["input_ids"]
 
     def convert_record(self, record):
+        print(record)
         if record['search']:
             conversation = Conversation.from_template(self.templates_path)
         else:
