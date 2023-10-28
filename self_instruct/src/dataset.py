@@ -2,10 +2,11 @@ import random
 from typing import List, Dict
 
 import torch
-from src.util.chat import Conversation
 from torch.utils.data import Dataset
 from tqdm import tqdm
 from transformers import AutoTokenizer
+
+from src.util.chat import Conversation
 
 
 class ChatDataset(Dataset):

@@ -162,6 +162,7 @@ def train(
 
     random.shuffle(train_records)
     print(train_records[0])
+    print(f'Number of train records is {len(train_records)}')
 
     model_type = config.get("model_type", "causal")
     templates_path = config["templates_path"]
