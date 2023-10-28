@@ -8,14 +8,13 @@ import torch
 import wandb
 from peft import get_peft_model, LoraConfig, prepare_model_for_kbit_training
 from src.dataset import ChatDataset
+from src.tools.merge_lora import merge_lora
 from src.util.dl import set_random_seed, fix_tokenizer, fix_model
 from src.util.io import read_jsonl
 from transformers import AutoTokenizer, AutoModelForCausalLM, DataCollatorForTokenClassification, AutoConfig
 from transformers import Trainer, TrainingArguments, logging, TrainerCallback, TrainerState, TrainerControl, \
     BitsAndBytesConfig
 from transformers.trainer_utils import PREFIX_CHECKPOINT_DIR
-
-from src.tools.merge_lora import merge_lora
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
@@ -100,15 +99,17 @@ def custom_prepare_model_for_int8_training(
 
 def train(
         config_file: str,
-        train_file: str,
-        val_file: str,
+        train_file_search: str,
+        val_file_search: str,
+        train_file_dialogue: str,
+        val_file_dialogue: str,
         output_dir: str,
         checkpoint: str = None,
         sample_rate: float = 1.0,
         report_to: str = "wandb",
         seed: int = 42,
         test_mode: bool = False,
-        exp_name: str = 'v1.0-lora',
+        exp_name: str = 'v1.1-lora',
         use_flash_attention_2: bool = False
 ):
     set_random_seed(seed)
@@ -146,8 +147,14 @@ def train(
     tokenizer = fix_tokenizer(tokenizer, model_config)
     tokenizer.save_pretrained(output_dir)
 
-    train_records = read_jsonl(train_file)
-    val_records = read_jsonl(val_file)
+    train_records_search = read_jsonl(train_file_search)
+    val_records_search = read_jsonl(val_file_search)
+
+    train_records_dialogue = read_jsonl(train_file_dialogue)
+    val_records_dialogue = read_jsonl(val_file_dialogue)
+
+    train_records = train_records_search + train_records_dialogue
+    val_records = val_records_search + val_records_dialogue
 
     if test_mode:
         train_records = train_records[:5]

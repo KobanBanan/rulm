@@ -3,6 +3,7 @@ import random
 import sys
 
 from datasets import load_dataset
+
 from bad_substrings import has_bad_ss
 
 dataset_name = sys.argv[1]
@@ -26,10 +27,10 @@ for row in load_dataset(dataset_name, split="train"):
 
     records.append({
         "messages": [
-            {"role": "user", "content": instruction},
-            {"role": "bot", "content": output}
+            {"role": "user", "content": instruction, 'search': True},
+            {"role": "bot", "content": output, 'search': True}
         ],
-        "source": "alpaca-evol-instruct"
+        "source": dataset_name
     })
 
 print("Evol-instruct count:", len(records))

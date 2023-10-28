@@ -58,9 +58,12 @@ class ChatDataset(Dataset):
         )["input_ids"]
 
     def convert_record(self, record):
-        conversation = Conversation.from_template(self.templates_path)
-        conversation.expand(record["messages"])
+        if record['search']:
+            conversation = Conversation.from_template(self.templates_path)
+        else:
+            conversation = Conversation.from_template(self.templates_path, is_search=False)
 
+        conversation.expand(record["messages"])
         input_ids, labels = [], []
         for message, role in conversation.iter_messages():
             message_input_ids = self.get_tokens(message)
