@@ -5,7 +5,7 @@ import sys
 from datasets import load_dataset
 from tqdm import tqdm
 
-from src.data_processing.bad_substrings import has_bad_ss
+from bad_substrings import has_bad_ss
 
 
 def revert_flattening(records):
