@@ -60,10 +60,8 @@ class ChatDataset(Dataset):
 
     def convert_record(self, record):
         # check if it's search or dialogue
-        if record['messages'][0]['search']:
-            conversation = Conversation.from_template(self.templates_path)
-        else:
-            conversation = Conversation.from_template(self.templates_path, is_search=False)
+
+        conversation = Conversation.from_template(self.templates_path)
 
         conversation.expand(record["messages"])
         input_ids, labels = [], []

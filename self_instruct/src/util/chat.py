@@ -1,11 +1,6 @@
 import json
 
-from prompt_generator import PromptGenerator
-
 DEFAULT_MESSAGE_TEMPLATE = "<s>{role}\n{content}</s>\n"
-
-# DEFAULT_SYSTEM_PROMPT is here
-prompt_generator = PromptGenerator()
 
 
 class Conversation:
@@ -14,7 +9,7 @@ class Conversation:
             system_message_template: str = DEFAULT_MESSAGE_TEMPLATE,
             user_message_template: str = DEFAULT_MESSAGE_TEMPLATE,
             bot_message_template: str = DEFAULT_MESSAGE_TEMPLATE,
-            system_prompt: str = prompt_generator.search_prompt,
+            system_prompt: str = 'Перефразируй: ',
             system_role: str = "system",
             user_role: str = "user",
             bot_role: str = "bot",
@@ -28,10 +23,6 @@ class Conversation:
         self.user_role = user_role
         self.bot_role = bot_role
         self.suffix = suffix
-        self.is_search = is_search
-
-        if not self.is_search:
-            system_prompt = prompt_generator.dialog_prompt
 
         self.messages = [{
             "role": self.system_role,
