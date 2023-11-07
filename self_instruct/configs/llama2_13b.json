@@ -28,7 +28,7 @@
     "load_in_4bit": false,
     "only_target_loss": true,
     "mode": "chat",
-    "templates_path": "internal_prompts/vvchatbot_search.json",
+    "templates_path": "internal_prompts/paraphrase.json",
     "model_name": "models/Llama-2-7b-hf",
     "model_type": "causal",
     "max_tokens_count": 2000
