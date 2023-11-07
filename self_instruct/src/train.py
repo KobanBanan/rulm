@@ -258,7 +258,7 @@ def train(
     model.save_pretrained(output_dir)
     tokenizer.save_pretrained(output_dir)
 
-    final_model_name = f"Data-Lab/{output_dir.split('/')[1]}_{exp_name}"
+    final_model_name = f"KobanBanan/{output_dir.split('/')[1]}_{exp_name}"
     merge_lora(output_dir, final_model_name)
 
 
