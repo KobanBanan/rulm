@@ -109,7 +109,7 @@ def train(
         report_to: str = "wandb",
         seed: int = 42,
         test_mode: bool = False,
-        exp_name: str = 'v1.1-lora',
+        exp_name: str = 'v1.2-lora',
         use_flash_attention_2: bool = False
 ):
     set_random_seed(seed)
