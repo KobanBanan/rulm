@@ -20,8 +20,8 @@ print(f'downloading {dataset_name}...')
 
 print('preparing sft dataset...')
 for row in load_dataset(dataset_name, split="train"):
-    instruction = "Перефразируй: " + row["instruction"]
-    output = row["output"]
+    instruction = "Перефразируй: " + row["text"]
+    output = row["paraphrases"]
     if has_bad_ss([{"content": output}]):
         continue
 
