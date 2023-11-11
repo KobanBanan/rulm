@@ -27,8 +27,8 @@ for row in load_dataset(dataset_name, split="train"):
 
     records.append({
         "messages": [
-            {"role": "user", "content": instruction, 'search': True},
-            {"role": "bot", "content": output, 'search': True}
+            {"role": "user", "content": instruction},
+            {"role": "bot", "content": output}
         ],
         "source": dataset_name
     })
