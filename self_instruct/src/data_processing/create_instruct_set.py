@@ -10,6 +10,8 @@ dataset_name = sys.argv[1]
 train_path = sys.argv[2]
 val_path = sys.argv[3]
 
+split = 'train[0:5000]'
+
 print(f'dataset {dataset_name}')
 print(f'train_path {train_path}')
 print('val path {val_path}')
@@ -19,7 +21,7 @@ records = []
 print(f'downloading {dataset_name}...')
 
 print('preparing sft dataset...')
-for row in load_dataset(dataset_name, split="train"):
+for row in load_dataset(dataset_name, split=split):
     instruction = "Перефразируй: " + row["original"]
     output = row["paraphrase"]
     if has_bad_ss([{"content": output}]):
