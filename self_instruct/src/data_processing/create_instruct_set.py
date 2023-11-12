@@ -19,7 +19,7 @@ records = []
 print(f'downloading {dataset_name}...')
 
 print('preparing sft dataset...')
-for row in load_dataset(dataset_name, split="train"):
+for row in load_dataset(dataset_name):
     instruction = "Перефразируй: " + row["original"]
     output = row["ru"]
     if has_bad_ss([{"content": output}]):
