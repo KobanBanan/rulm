@@ -19,9 +19,9 @@ records = []
 print(f'downloading {dataset_name}...')
 
 print('preparing sft dataset...')
-for row in load_dataset(dataset_name):
+for row in load_dataset(dataset_name, split="train"):
     instruction = "Перефразируй: " + row["original"]
-    output = row["ru"]
+    output = row["paraphrase"]
     if has_bad_ss([{"content": output}]):
         continue
 
