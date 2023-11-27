@@ -6,6 +6,9 @@ from datasets import load_dataset
 from tqdm import tqdm
 
 from bad_substrings import has_bad_ss
+from prompt_generator import PromptGenerator
+
+prompt_generator = PromptGenerator()
 
 
 def revert_flattening(records):
@@ -52,7 +55,7 @@ def build_char_system_messages(char):
     return chat
 
 
-def main(train_path, val_path):
+def main(train_path, val_path, open_chat=False):
     random.seed(42)
 
     instruct_records = []
@@ -198,6 +201,11 @@ def main(train_path, val_path):
     print("All count after cleaning:", len(records))
 
     random.shuffle(records)
+
+    if open_chat:
+        to_open_chat_format(records)
+        return
+
     border = int(0.95 * len(records))
     train_records = records[:border]
     val_records = records[border:]
@@ -209,6 +217,38 @@ def main(train_path, val_path):
             w.write(json.dumps(record, ensure_ascii=False).strip() + "\n")
 
 
+def to_open_chat_format(records_):
+    result = []
+    for rec in records_:
+
+        res = {"items": [], 'system': prompt_generator.dialog_prompt}
+        dialogue = rec['messages']
+
+        for message in dialogue:
+            template = {"role": "", "content": "", "weight": ""}
+            if message['role'] == 'system':
+                continue
+
+            if message['role'] == 'user':
+                template["role"] = "user"
+                template["content"] = message["content"]
+                template['weight'] = 0.0
+                res['items'].append(template)
+
+            if message['role'] == 'bot':
+                template['role'] = 'assistant'
+                template["content"] = message["content"]
+                template['weight'] = 1.0
+                res['items'].append(template)
+
+        result.append(res)
+
+    with open(train_path, "w") as w:
+        for record in result:
+            w.write(json.dumps(record, ensure_ascii=False).strip() + "\n")
+
+
 train_path = sys.argv[1]
 val_path = sys.argv[2]
-main(train_path, val_path)
+open_chat = sys.argv[3]
+main(train_path, val_path, open_chat)
