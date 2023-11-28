@@ -203,6 +203,7 @@ def main(train_path, val_path, open_chat=False):
     random.shuffle(records)
 
     if open_chat:
+        print('running openchat formatting')
         to_open_chat_format(records)
         return
 
@@ -251,4 +252,4 @@ def to_open_chat_format(records_):
 train_path = sys.argv[1]
 val_path = sys.argv[2]
 open_chat = sys.argv[3]
-main(train_path, val_path, bool(open_chat))
+main(train_path, val_path, False)
