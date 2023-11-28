@@ -202,14 +202,10 @@ def main(train_path, val_path, open_chat=False):
 
     random.shuffle(records)
 
-    if open_chat:
-        print('running openchat formatting')
-        to_open_chat_format(records)
-        return
-
     border = int(0.95 * len(records))
     train_records = records[:border]
     val_records = records[border:]
+    print(f'Number of records to save: train {len(train_records)}, val {len(val_records)}')
     with open(train_path, "w") as w:
         for record in train_records:
             w.write(json.dumps(record, ensure_ascii=False).strip() + "\n")
@@ -251,5 +247,4 @@ def to_open_chat_format(records_):
 
 train_path = sys.argv[1]
 val_path = sys.argv[2]
-open_chat = sys.argv[3]
-main(train_path, val_path, False)
+main(train_path, val_path)
