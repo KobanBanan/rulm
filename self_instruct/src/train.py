@@ -202,6 +202,7 @@ def train(
     if load_in_8bit:
         max_memory = f'{40960}MB'
         n_gpus = torch.cuda.device_count()
+        print(f'n_gpus: {n_gpus}')
         assert not load_in_4bit
         model = model_types[model_type].from_pretrained(
             model_name,
