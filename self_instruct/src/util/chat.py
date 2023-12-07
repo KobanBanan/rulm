@@ -2,7 +2,7 @@ import json
 
 from prompt_generator import PromptGenerator
 
-DEFAULT_MESSAGE_TEMPLATE = "<s>{role}\n{content}</s>\n"
+DEFAULT_MESSAGE_TEMPLATE = "<|im_start|>{role}\n{content}<|im_start|>\n"
 
 # DEFAULT_SYSTEM_PROMPT is here
 prompt_generator = PromptGenerator()
@@ -71,7 +71,7 @@ class Conversation:
             return self.user_message_template.format(**message)
         return self.bot_message_template.format(**message)
 
-    def get_prompt(self, tokenizer, max_tokens: int = None, add_suffix: bool = True):
+    def get_prompt(self, tokenizer, max_tokens: int = None, add_suffix: bool = False):
         messages = self.messages
         if max_tokens is not None:
             messages = self.shrink(tokenizer, messages, max_tokens)
