@@ -2,7 +2,7 @@ import json
 
 from prompt_generator import PromptGenerator
 
-DEFAULT_MESSAGE_TEMPLATE = "<|im_start|>{role}\n{content}<|im_start|>\n"
+DEFAULT_MESSAGE_TEMPLATE = "<|im_start|>{role}\n{content}<|im_end|>\n"
 
 # DEFAULT_SYSTEM_PROMPT is here
 prompt_generator = PromptGenerator()
