@@ -37,9 +37,9 @@ def fix_tokenizer(tokenizer, model_config):
         token = tokenizer.convert_ids_to_tokens(token_id)
         if tokenizer.pad_token_id in bad_ids and guessed_pad_token_id is None and "pad" in token:
             guessed_pad_token_id = token_id
-        if tokenizer.bos_token_id in bad_ids and guessed_bos_token_id is None and "<s>" in token:
+        if tokenizer.bos_token_id in bad_ids and guessed_bos_token_id is None and "<|im_start|>" in token:
             guessed_bos_token_id = token_id
-        if tokenizer.eos_token_id in bad_ids and guessed_eos_token_id is None and "</s>" in token:
+        if tokenizer.eos_token_id in bad_ids and guessed_eos_token_id is None and "<|im_end|>" in token:
             guessed_eos_token_id = token_id
         if tokenizer.unk_token_id in bad_ids and guessed_unk_token_id is None and "unk" in token:
             guessed_unk_token_id = token_id
@@ -62,7 +62,7 @@ def fix_tokenizer(tokenizer, model_config):
             tokenizer.sep_token_id,
             tokenizer.eos_token_id,
         )
-        token_id, token = _check_candidates(candidates, bad_ids, tokenizer, "<s>")
+        token_id, token = _check_candidates(candidates, bad_ids, tokenizer, "<|im_start|>")
         tokenizer.bos_token_id = token_id
         special_tokens["bos_token"] = token
 
@@ -72,7 +72,7 @@ def fix_tokenizer(tokenizer, model_config):
             guessed_eos_token_id,
             tokenizer.bos_token_id
         )
-        token_id, token = _check_candidates(candidates, bad_ids, tokenizer, "</s>")
+        token_id, token = _check_candidates(candidates, bad_ids, tokenizer, "<|im_end|>")
         tokenizer.eos_token_id = token_id
         special_tokens["eos_token"] = token
 
