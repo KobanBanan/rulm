@@ -69,7 +69,6 @@ class Conversation:
             return self.system_message_template.format(**message)
         if message["role"] == self.user_role:
             return self.user_message_template.format(**message)
-        print(self.bot_message_template)
         return self.bot_message_template.format(**message)
 
     def get_prompt(self, tokenizer, max_tokens: int = None, add_suffix: bool = False):
@@ -84,7 +83,6 @@ class Conversation:
         if add_suffix:
             final_text += self.suffix
 
-        print(final_text)
         return final_text.strip()
 
     def iter_messages(self):
