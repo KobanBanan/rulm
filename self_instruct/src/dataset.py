@@ -33,7 +33,7 @@ class ChatDataset(Dataset):
         self.add_global_bos = add_global_bos
         self.add_global_eos = add_global_eos
         self.truncation_side = truncation_side
-        self.is_printed = True
+        self.is_printed = False
 
         self.records = []
         for record in tqdm(original_records):
