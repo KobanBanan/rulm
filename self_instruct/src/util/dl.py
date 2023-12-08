@@ -70,7 +70,7 @@ def fix_tokenizer(tokenizer, model_config):
         candidates = (
             model_config.eos_token_id,
             guessed_eos_token_id,
-            tokenizer.bos_token_id
+            tokenizer.eos_token_id
         )
         token_id, token = _check_candidates(candidates, bad_ids, tokenizer, "<|im_end|>")
         tokenizer.eos_token_id = token_id

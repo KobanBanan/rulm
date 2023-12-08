@@ -18,8 +18,8 @@ class ChatDataset(Dataset):
             templates_path: str,
             sample_rate: float = 1.0,
             only_target_loss: bool = True,
-            add_global_bos: bool = True,
-            add_global_eos: bool = True,
+            add_global_bos: bool = False,
+            add_global_eos: bool = False,
             labels_pad_token_id: int = -100,
             truncation_side: str = "left"
     ):
