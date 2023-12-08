@@ -17,7 +17,7 @@ class Conversation:
             system_prompt: str = prompt_generator.search_prompt,
             system_role: str = "system",
             user_role: str = "user",
-            bot_role: str = "bot",
+            bot_role: str = "assistant",
             suffix: str = "<s>bot",
             is_search: bool = True
     ):
@@ -83,6 +83,7 @@ class Conversation:
         if add_suffix:
             final_text += self.suffix
 
+        print(final_text)
         return final_text.strip()
 
     def iter_messages(self):
